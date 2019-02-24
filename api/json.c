@@ -1,28 +1,40 @@
-#include "xml.h"
 #include <stdio.h>
-#include <assert.h>
+#include "json.h"
 
-//加载xml文件
-xml_node *xml_load(const char *path)
+//从json文件中读取内容
+JSON_API json *json_file(const char *path)
 {
-    //参数校验
-    assert(path);
-    if (!path) return NULL;
+    FILE *file;
+    long len;
+    char *data;
 
-    //打开文件
-    FILE *fp = fopen(path, "r");
-    if (!fp) return NULL;
+    file = fopen(path, "rb");
+    fseek(file, 0, SEEK_END);
+    //取得文件位置指针当前位置相对于文件首的偏移字节数。
+    len = ftell(file);
+    //跳到文件开头
+    fseek(file, 0, SEEK_SET);
+    data = (char *)malloc(len + 1);
+    //读文件内容到内存
+    fread(data, 1, len, file);
+    data[len] = 0;
+    fclose(file);
 
-    //加载xml
-    xml_node *root = mxmlLoadFile(NULL, fp, MXML_TEXT_CALLBACK);
-    //关闭文件
-    fclose(fp);
+    json *json = json_parse(data);
+    free(data);
 
-    return root;
+    return json;
 }
 
-//保存xml文件
-void xml_save(xml_node *node, const char *path)
+//将json对象保存到文件
+JSON_API void json_save(json *json, const char *path)
 {
-    //有待实现...
+    char *text = json_print(json);
+    if (!text) return;
+
+    FILE *file = fopen(path, "w");
+    fseek(file, 0, SEEK_SET);
+    fwrite(text, 1, strlen(text), file);
+    fclose(file);
+    free(text);
 }
