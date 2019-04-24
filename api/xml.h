@@ -1,6 +1,10 @@
 #ifndef _XML_H_
 #define _XML_H_
 
+/*
+ * author: heluan
+ */
+
 #include <mxml.h>
 
 typedef mxml_node_t xml_node;
