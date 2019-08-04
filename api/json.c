@@ -9,6 +9,7 @@ JSON_API json *json_file(const char *path)
     char *data;
 
     file = fopen(path, "rb");
+    //定位到文件尾
     fseek(file, 0, SEEK_END);
     //取得文件位置指针当前位置相对于文件首的偏移字节数。
     len = ftell(file);
