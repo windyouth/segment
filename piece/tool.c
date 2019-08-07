@@ -4,7 +4,7 @@
 int exec_cmd(const char *cmd, char **out, int *out_len)
 {
     //变量定义
-    char temp[1024], *p;
+    char temp[1024];
     int temp_len = 0, read = 0;
     *out_len = 0;
 
@@ -25,8 +25,8 @@ int exec_cmd(const char *cmd, char **out, int *out_len)
         if (*out == NULL)
             return -3;
 
-        p = *out + read;
-        memcpy(p, temp, temp_len);
+        //拷贝
+        memcpy(*out + read, temp, temp_len);
         read += temp_len;
     }
 
@@ -35,4 +35,21 @@ int exec_cmd(const char *cmd, char **out, int *out_len)
 
     fclose(file);
     return 0;
+}
+
+//查看CPU核数
+int get_cpu_cores()
+{
+    char *out = 0;
+    int out_len, num = 0;
+    char *cmd = "cat /proc/cpuinfo | grep processor | wc -l";
+
+    //执行shell命令
+    exec_cmd(cmd, &out, &out_len);
+    if (!out) return -1;
+
+    num = atoi(out);
+    free(out);
+
+    return num;
 }

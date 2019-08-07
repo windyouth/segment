@@ -38,5 +38,6 @@ void realloc_test()
 
 void main()
 {
-    cmd_test();
+    //cmd_test();
+    printf("本机CPU总核数：%d \n", get_cpu_cores());
 }
